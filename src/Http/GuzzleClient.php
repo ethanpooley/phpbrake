@@ -23,14 +23,17 @@ class GuzzleClient implements ClientInterface
     /**
      * @inheritdoc
      */
-    public function send($url, $data)
+    public function send($url, $data, $options)
     {
-        $response = $this->guzzleClient->request('POST', $url, [
+        $defaultOptions = [
             'headers' => [
                 'Content-type' => 'application/json',
             ],
             'body' => $data,
-        ]);
+        ];
+        $options = array_merge($defaultOptions, $options);
+
+        $response = $this->guzzleClient->request('POST', $url, $options);
 
         $headers = $this->getHeadersAsString($response);
         $body = $response->getBody();

@@ -12,16 +12,15 @@ class DefaultClient implements ClientInterface
     /**
      * @inheritdoc
      */
-    public function send($url, $data)
+    public function send($url, $data, $options)
     {
-        $options = [
-            'http' => [
-                'header' => "Content-type: application/json\r\n",
-                'method' => 'POST',
-                'content' => $data,
-                'ignore_errors' => true,
-            ],
+        $defaultOptions = [
+            'header' => "Content-type: application/json\r\n",
+            'method' => 'POST',
+            'content' => $data,
+            'ignore_errors' => true,
         ];
+        $options = ['http' => array_merge($defaultOptions, $options)];
         $context = stream_context_create($options);
         $body = file_get_contents($url, false, $context);
         $headers = (isset($http_response_header) ? $http_response_header : null);

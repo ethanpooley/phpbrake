@@ -39,6 +39,7 @@ class Notifier
      *  - environment
      *  - rootDirectory
      *  - httpClient    which http client to use: "default", "curl" or "guzzle"
+     *  - httpOptions   options to be passed to the HTTP client
      *
      * @param array $opt the options
      * @throws \Airbrake\Exception
@@ -49,8 +50,11 @@ class Notifier
             throw new Exception('both projectId and projectKey are required');
         }
 
+        // Merge user-provided options with internal defaults, preferring the user-provided values.
         $this->opt = array_merge([
             'host' => 'api.airbrake.io',
+            'httpClient' => null,
+            'httpOptions' => [],
         ], $opt);
 
         if (!empty($opt['rootDirectory'])) {
@@ -59,8 +63,10 @@ class Notifier
             });
         }
 
-        $handler = (isset($this->opt['httpClient']) ? $this->opt['httpClient'] : null);
-        $this->client = Http\Factory::createHttpClient($handler);
+        $this->client = Http\Factory::createHttpClient(
+            $this->opt['httpClient'],
+            $this->opt['httpOptions']
+        );
     }
 
     /**
@@ -162,7 +168,7 @@ class Notifier
      */
     protected function postNotice($url, $data)
     {
-        return $this->client->send($url, $data);
+        return $this->client->send($url, $data, $this->opt['httpOptions']);
     }
 
     /**

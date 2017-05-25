@@ -12,9 +12,9 @@ class CurlClient implements ClientInterface
     /**
      * @inheritdoc
      */
-    public function send($url, $data)
+    public function send($url, $data, $options)
     {
-        $curlOptions = [
+        $defaultOptions = [
             CURLOPT_URL => $url,
             CURLOPT_CUSTOMREQUEST => 'POST',
             CURLOPT_POSTFIELDS => $data,
@@ -25,6 +25,8 @@ class CurlClient implements ClientInterface
                 'Content-Length: ' . strlen($data),
             ],
         ];
+        // Merge user-provided options with internal defaults, preferring the user-provided values.
+        $curlOptions = array_merge($defaultOptions, $options);
 
         $ch = curl_init();
         curl_setopt_array($ch, $curlOptions);
