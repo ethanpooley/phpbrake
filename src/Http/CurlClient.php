@@ -26,7 +26,7 @@ class CurlClient implements ClientInterface
             ],
         ];
         // Merge user-provided options with internal defaults, preferring the user-provided values.
-        $curlOptions = array_merge($defaultOptions, $options);
+        $curlOptions = array_replace($defaultOptions, $options);
 
         $ch = curl_init();
         curl_setopt_array($ch, $curlOptions);

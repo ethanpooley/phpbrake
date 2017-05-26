@@ -20,7 +20,8 @@ class DefaultClient implements ClientInterface
             'content' => $data,
             'ignore_errors' => true,
         ];
-        $options = ['http' => array_merge($defaultOptions, $options)];
+        // Merge user-provided options with internal defaults, preferring the user-provided values.
+        $options = ['http' => array_replace($defaultOptions, $options)];
         $context = stream_context_create($options);
         $body = file_get_contents($url, false, $context);
         $headers = (isset($http_response_header) ? $http_response_header : null);

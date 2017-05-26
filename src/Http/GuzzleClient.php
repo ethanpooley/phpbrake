@@ -31,7 +31,8 @@ class GuzzleClient implements ClientInterface
             ],
             'body' => $data,
         ];
-        $options = array_merge($defaultOptions, $options);
+        // Merge user-provided options with internal defaults, preferring the user-provided values.
+        $options = array_replace($defaultOptions, $options);
 
         $response = $this->guzzleClient->request('POST', $url, $options);
 
